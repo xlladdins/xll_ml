@@ -99,21 +99,27 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|ARM64'">
     <TargetExt>.xll</TargetExt>
+    <IncludePath>$(ProjectDir)mdspan\include;$(ProjectDir)stdBLAS\include;$(VC_IncludePath);$(WindowsSDK_IncludePath)</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|ARM64'">
     <TargetExt>.xll</TargetExt>
+    <IncludePath>$(ProjectDir)mdspan\include;$(ProjectDir)stdBLAS\include;$(VC_IncludePath);$(WindowsSDK_IncludePath)</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <TargetExt>.xll</TargetExt>
+    <IncludePath>$(ProjectDir)mdspan\include;$(ProjectDir)stdBLAS\include;$(VC_IncludePath);$(WindowsSDK_IncludePath)</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <TargetExt>.xll</TargetExt>
+    <IncludePath>$(ProjectDir)mdspan\include;$(ProjectDir)stdBLAS\include;$(VC_IncludePath);$(WindowsSDK_IncludePath)</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <TargetExt>.xll</TargetExt>
+    <IncludePath>$(ProjectDir)mdspan\include;$(ProjectDir)stdBLAS\include;$(VC_IncludePath);$(WindowsSDK_IncludePath)</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <TargetExt>.xll</TargetExt>
+    <IncludePath>$(ProjectDir)mdspan\include;$(ProjectDir)stdBLAS\include;$(VC_IncludePath);$(WindowsSDK_IncludePath)</IncludePath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -201,6 +207,9 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="fms_perceptron.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="xll_ml.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
