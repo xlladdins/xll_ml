@@ -16,14 +16,14 @@ AddIn xai_perceptron_update(
 	.FunctionHelp(L"Update perceptron weights and bias given input vector and label.")
 	.Category(L"ML")
 );
-_FP12* WINAPI xll_perceptron_update(_FP12* pw, double* pb, const _FP12* const px, int y, double alpha)
+_FP12* WINAPI xll_perceptron_update(_FP12* pw, double b, const _FP12* const px, int y, double alpha)
 {
 #pragma XLLEXPORT
-		try {
+	try {
 		auto w = std::mdspan(pw->array, size(*pw));
 		auto x = std::mdspan(px->array, size(*px));
-		double& b = *pb;
-		alpha == 0 ? 1.0 : alpha;
+		alpha = alpha ? alpha : 1;
+
 		fms::perceptron::update(w, b, x, y, alpha);
 	}
 	catch (const std::exception& ex) {

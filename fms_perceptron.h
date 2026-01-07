@@ -20,7 +20,7 @@ namespace fms::perceptron {
         using std::experimental::linalg::scaled;
 
         // Compute w·x + b
-        double prediction = dot(w, x, b);
+        double prediction = dot(w, x) + b;
 
         // Check if misclassified
         if (prediction * y < 0) {
