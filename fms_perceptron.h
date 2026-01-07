@@ -10,12 +10,10 @@
 
 namespace fms::perceptron {
 
-    template<class T>
-    using mdspan = std::mdspan <T, std::extents<int, std::dynamic_extent>>;
-
     // Update vector w and scalar b given point x and label y in {-1, 1}
-    void update(mdspan<double>& w, double& b,
-        mdspan<const double> x, int y, double alpha = 1.0)
+    template<class T, class S, ::std::size_t E>
+    void update(std::mdspan<T, std::extents<S,E>>& w, T& b,
+        std::mdspan<const T, std::extents<S, E>> x, int y, double alpha = 1.0)
     {
         using std::experimental::linalg::add;
         using std::experimental::linalg::dot;
@@ -26,8 +24,8 @@ namespace fms::perceptron {
 
         // Check if misclassified
         if (prediction * y < 0) {
-            // Update: w += alpha y x    ,
-            add(scaled(alpha * y, w), x, w);
+            // Update: w = w + alpha y x    ,
+            add(w, scaled(alpha * y, x), w);
 
             // Update bias
             b += alpha * y;
