@@ -62,12 +62,12 @@ namespace fms::option {
 			return k * m.cdf(x, 0) - f * m.cdf(x, s);
 		}
 		
-		// TODO: implement using put-call parity: call = put + f - k
+		// implement using put-call parity: call = put + f - k
 		// (F - k)^+ - (k - F)^+ = F - k
 		template<class F = double, class S = double, class K = double>
 		auto call(F f, S s, K k, const model<F, S>& m)
 		{
-			return 0; 
+			return put(f, s, k, m) + f - k;
 		}
 
 		// In the Black-Scholes/Merton model
@@ -94,8 +94,21 @@ namespace fms::option {
 				return black::moneyness(f, s, k, m);
 			}
 
-			// TODO: implement bsm::put and bsm::call.
+			// implement bsm::put and bsm::call.
 			// Hint: use bsm_to_black to get f and s and then call black::put and black::call.
+			template<class F = double, class S = double, class K = double>
+			inline auto put(double r, double s0, double sigma, K k, double t, const model<F, S>& m)
+			{
+				auto [f, s] = bsm_to_black<F, S>(r, s0, sigma, t);
+				return black::put(f, s, k, m);
+			}
+
+			template<class F = double, class S = double, class K = double>
+			inline auto call(double r, double s0, double sigma, K k, double t, const model<F, S>& m)
+			{
+				auto [f, s] = bsm_to_black<F, S>(r, s0, sigma, t);
+				return black::call(f, s, k, m);
+			}
 		}
 	}
 
