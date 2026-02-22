@@ -117,7 +117,6 @@ double WINAPI xll_option_black_put(double f, double s, double k, HANDLEX m) {
   return result;
 }
 
-// TODO: implement OPTION.BLACK.CALL
 AddIn xai_option_black_call(
     Function(XLL_DOUBLE, L"xll_option_black_call", CATEGORY L".BLACK.CALL")
         .Arguments({
