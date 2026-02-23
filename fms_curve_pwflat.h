@@ -17,7 +17,8 @@ namespace fms::curve {
 	public:
 		// constant curve
 		constexpr pwflat()
-		{ }
+		{
+		}
 		pwflat(size_t n, const T* t, const F* f)
 			: t_(t, t + n), f_(f, f + n)
 		{
@@ -62,13 +63,13 @@ namespace fms::curve {
 		{
 			return t_.size();
 		}
-		// TODO: change time return pointer constant T*
-		const auto time() const
+		// TODO: change time return pointer constant T* (Solved)
+		const T* time() const
 		{
 			return t_.data(); // fms::iterable::make_interval(t_);
 		}
-		// TODO: change rate return pointer constant F*
-		const auto rate() const
+		// TODO: change rate return pointer constant F* (Solved)
+		const F* rate() const
 		{
 			return f_.data(); // fms::iterable::make_interval(f_);
 		}
