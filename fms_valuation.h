@@ -1,7 +1,7 @@
 // tmx_valuation.h - present value, duration, convexity, yield, oas
 #pragma once
 #include <cmath>
-// TODO: fix up for fms namespace
+// TODO: fix up for fms namespace (It appears that we are using fms namespace)
 #include "fms_curve.h"
 #include "fms_instrument.h"
 #include "fms_root1d.h"
@@ -22,7 +22,7 @@ namespace fms::value {
 
 	// Present value at t of a zero coupon bond with cash flow c at time u.
 	template<class U, class C, class T, class F>
-	constexpr C present(const instrument::base<U,C>& uc, const curve::base<T, F>& f)
+	constexpr C present(const instrument::base<U, C>& uc, const curve::base<T, F>& f)
 	{
 		C pv = 0;
 
@@ -39,8 +39,17 @@ namespace fms::value {
 	template<class U, class C, class T, class F>
 	constexpr auto duration(const instrument::base<U, C>& i, const curve::base<T, F>& f)
 	{
-		// TODO: Use for loop like in the present value function.
-		return 0; // return sum(apply([&f](const auto& uc) { return -(uc.u) * present(uc, f); }, i));
+		// TODO: Use for loop like in the present value function. (Solved)
+
+		C durv = 0;
+
+		const U* u = i.time();
+		const C* c = i.cash();
+		for (size_t j = 0; j < i.size(); ++j) {
+			durv += c[j] * f.discount(u[j]) * -u[j];
+		}
+
+		return durv; // return sum(apply([&f](const auto& uc) { return -(uc.u) * present(uc, f); }, i));
 	}
 
 	// Duration divided by present value.
@@ -54,8 +63,17 @@ namespace fms::value {
 	template<class U, class C, class T, class F>
 	constexpr auto convexity(const instrument::base<U, C>& i, const curve::base<T, F>& f)
 	{
-		// TODO: Use for loop like in the present value function.
-		return 0; // return sum(apply([&f](const auto& uc) { return uc.u * uc.u * present(uc, f); }, i));
+		// TODO: Use for loop like in the present value function. (Solved)
+
+		C contv = 0;
+
+		const U* u = i.time();
+		const C* c = i.cash();
+		for (size_t j = 0; j < i.size(); ++j) {
+			contv += c[j] * f.discount(u[j]) * u[j] * u[j];
+		}
+
+		return contv; // return sum(apply([&f](const auto& uc) { return uc.u * uc.u * present(uc, f); }, i));
 	}
 
 	// Price of the instrument at constant yield y.
