@@ -10,7 +10,12 @@ namespace fms::instrument {
 	template<class U = double, class C = double>
 	class base {
 	public:
-		// TODO: Add rule of 5
+		base() = default;
+		virtual ~base() = default;
+		base(const base&) = default;
+		base& operator=(const base&) = default;
+		base(base&&) = default;
+		base& operator=(base&&) = default;
 
 		// Number of cash flows.
 		constexpr std::size_t size() const noexcept
@@ -117,7 +122,7 @@ namespace fms::instrument {
 		return t;
 	}
 	template<class U = double, class C = double>
-	inline std::vector<U> payments(U u, C c, frequency f = frequency::seminanual)
+	inline std::vector<C> payments(U u, C c, frequency f = frequency::semiannual)
 	{
 		std::size_t n = static_cast<std::size_t>(u * U(f));
 		std::vector<C> p(n, c / U(f)); // n coupon payments of c/f

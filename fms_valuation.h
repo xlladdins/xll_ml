@@ -1,7 +1,6 @@
-// tmx_valuation.h - present value, duration, convexity, yield, oas
+// fmx_valuation.h - present value, duration, convexity, yield, oas
 #pragma once
 #include <cmath>
-// TODO: fix up for fms namespace
 #include "fms_curve.h"
 #include "fms_instrument.h"
 #include "fms_root1d.h"
@@ -37,10 +36,17 @@ namespace fms::value {
 
 	// Derivative of present value with respect to a parallel shift.
 	template<class U, class C, class T, class F>
-	constexpr auto duration(const instrument::base<U, C>& i, const curve::base<T, F>& f)
+	constexpr auto duration(const instrument::base<U, C>& uc, const curve::base<T, F>& f)
 	{
-		// TODO: Use for loop like in the present value function.
-		return 0; // return sum(apply([&f](const auto& uc) { return -(uc.u) * present(uc, f); }, i));
+		C dv = 0;
+
+		const U* u = uc.time();
+		const C* c = uc.cash();
+		for (size_t i = 0; i < uc.size(); ++i) {
+			dv -= u[i] * c[i] * f.discount(u[i]);
+		}
+
+		return dv;
 	}
 
 	// Duration divided by present value.
@@ -52,10 +58,17 @@ namespace fms::value {
 
 	// Second derivative of present value with respect to a parallel shift.
 	template<class U, class C, class T, class F>
-	constexpr auto convexity(const instrument::base<U, C>& i, const curve::base<T, F>& f)
+	constexpr auto convexity(const instrument::base<U, C>& uc, const curve::base<T, F>& f)
 	{
-		// TODO: Use for loop like in the present value function.
-		return 0; // return sum(apply([&f](const auto& uc) { return uc.u * uc.u * present(uc, f); }, i));
+		C conv = 0;
+
+		const U* u = uc.time();
+		const C* c = uc.cash();
+		for (size_t i = 0; i < uc.size(); ++i) {
+			conv += u[i] * u[i] * c[i] * f.discount(u[i]);
+		}
+
+		return conv;
 	}
 
 	// Price of the instrument at constant yield y.
