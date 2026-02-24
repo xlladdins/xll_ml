@@ -27,6 +27,7 @@ namespace fms::curve {
 			: t_(t.begin(), t.end()), f_(f.begin(), f.end())
 		{
 			ensure(t_.size() == f_.size() || !"pwflat: t and f must have the same size");
+			ensure(fms::pwflat::monotonic(t_.size(), t_.data()));
 		}
 		pwflat(const pwflat&) = default;
 		pwflat& operator=(const pwflat&) = default;
@@ -62,15 +63,13 @@ namespace fms::curve {
 		{
 			return t_.size();
 		}
-		// TODO: change time return pointer constant T*
-		const auto time() const
+		const T* time() const noexcept
 		{
-			return t_.data(); // fms::iterable::make_interval(t_);
+			return t_.data();
 		}
-		// TODO: change rate return pointer constant F*
-		const auto rate() const
+		const F* rate() const noexcept
 		{
-			return f_.data(); // fms::iterable::make_interval(f_);
+			return f_.data();
 		}
 
 		pwflat& push_back(T t, F f)

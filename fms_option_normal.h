@@ -9,7 +9,7 @@ namespace fms::option {
 
 	template<class X = double, class S = double>
 	struct normal : base<X, S> {
-		using base<X, S>::T;
+		using typename base<X, S>::T;
 
 	private:
 		// Standard normal cumulative distribution function
@@ -30,4 +30,4 @@ namespace fms::option {
 		}
 	};
 
-} // namespace fms::option::black
+} // namespace fms::option

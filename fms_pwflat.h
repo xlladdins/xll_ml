@@ -109,7 +109,15 @@ namespace fms::pwflat {
 			t_ = t[i];
 		}
 		if (u > t_) {
-			I += (i == n ? _f : f[i]) * (u - t_);
+			if (i == n) {
+				if (math::isnan(_f)) {
+					return math::NaN<F>;
+				}
+				I += _f * (u - t_);
+			}
+			else {
+				I += f[i] * (u - t_);
+			}
 		}
 
 		return I;
