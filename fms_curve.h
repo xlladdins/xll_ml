@@ -156,14 +156,14 @@ namespace fms::curve
 	{
 		{
 			// TODO: use static_assert.
-			bump b(0.5, 1., 2.);
-			assert(b.forward(0.9) == 0);
-			assert(b.forward(1) == 0.5);
-			assert(b.forward(2) == 0.5);
-			assert(b.forward(2.1) == 0);
-			assert(b.integral(0) == 0);
-			assert(b.integral(1) == 0);
-			assert(b.integral(2) == 0.5);
+			constexpr bump b(0.5, 1., 2.);
+			static_assert(b.forward(0.9) == 0);
+			static_assert(b.forward(1) == 0.5);
+			static_assert(b.forward(2) == 0.5);
+			static_assert(b.forward(2.1) == 0);
+			static_assert(b.integral(0) == 0);
+			static_assert(b.integral(1) == 0);
+			static_assert(b.integral(2) == 0.5);
 		}
 
 		return 0;
