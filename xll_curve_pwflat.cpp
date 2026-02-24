@@ -70,3 +70,87 @@ _FP12* WINAPI xll_curve_pwflat(HANDLEX h)
 
 // TODO: Implement CURVE.FORWARD, CURVE.DISCOUNT, CURVE.SPOT
 // use `handle<curve::base<>> h_(h)
+
+static AddIn xai_curve_forward(
+	Function(XLL_DOUBLE, L"xll_curve_forward", CATEGORY L".CURVE.FORWARD")
+	.Arguments({
+		Arg(XLL_HANDLEX, L"h", L"is a handle to a curve."),
+		Arg(XLL_DOUBLE, L"u", L"is the forward rate time."),
+		})
+	.Category(CATEGORY)
+	.FunctionHelp(L"Return the forward rate at time u.")
+);
+
+double WINAPI xll_curve_forward(HANDLEX h, double u)
+{
+#pragma XLLEXPORT
+	double f = std::numeric_limits<double>::quiet_NaN();
+	try {
+		handle<curve::base<>> h_(h);
+		ensure(h_);
+		f = h_ ->forward(u);
+	}
+	catch (const std::exception& ex) {
+		XLL_ERROR(ex.what());
+	}
+	catch (...) {
+		XLL_ERROR(__FUNCTION__ ": unknown exception");
+	}
+	return f;
+}
+
+static AddIn xai_curve_discount(
+	Function(XLL_DOUBLE, L"xll_curve_discount", CATEGORY L".CURVE.DISCOUNT")
+	.Arguments({
+		Arg(XLL_HANDLEX, L"h", L"is a handle to a curve."),
+		Arg(XLL_DOUBLE, L"u", L"is the discount time."),
+		})
+	.Category(CATEGORY)
+	.FunctionHelp(L"Return the discount rate at time u.")
+);
+
+double WINAPI xll_curve_discount(HANDLEX h, double u)
+{
+#pragma XLLEXPORT
+	double d = std::numeric_limits<double>::quiet_NaN();
+	try {
+		handle<curve::base<>> h_(h);
+		ensure(h_);
+		d = h_ ->discount(u);
+	}
+	catch (const std::exception& ex) {
+		XLL_ERROR(ex.what());
+	}
+	catch (...) {
+		XLL_ERROR(__FUNCTION__ ": unknown exception");
+	}
+	return d;
+}
+
+static AddIn xai_curve_spot(
+	Function(XLL_DOUBLE, L"xll_curve_spot", CATEGORY L".CURVE.SPOT")
+	.Arguments({
+		Arg(XLL_HANDLEX, L"h", L"is a handle to a curve."),
+		Arg(XLL_DOUBLE, L"u", L"is the spot time."),
+		})
+	.Category(CATEGORY)
+	.FunctionHelp(L"Return the spot rate at time u.")
+);
+
+double WINAPI xll_curve_spot(HANDLEX h, double u)
+{
+#pragma XLLEXPORT
+	double s = std::numeric_limits<double>::quiet_NaN();
+	try {
+		handle<curve::base<>> h_(h);
+		ensure(h_);
+		s = h_ ->spot(u);
+	}
+	catch (const std::exception& ex) {
+		XLL_ERROR(ex.what());
+	}
+	catch (...) {
+		XLL_ERROR(__FUNCTION__ ": unknown exception");
+	}
+	return s;
+}

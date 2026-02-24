@@ -18,11 +18,11 @@ namespace fms::curve {
 	// Bootstrap a single instrument given last time on curve and optional initial forward rate guess.
 	// Return point on the curve repricing the instrument.
 	template<class U, class C, class T = double, class F = double>
-	inline std::pair<T, F> bootstrap0(instrument::base<U, C> i, const curve::base<T, F>& f,
+	inline std::pair<T, F> bootstrap0(instrument::base<U, C>& i, const curve::base<T, F>& f,
 		T _t, F _f = math::NaN<F>, F p = 0)
 	{
 		const auto uc = i.last(); // last instrument cash flow
-		if (uc.u <= _t) {
+		if (uc.first <= _t) {
 			return { math::NaN<T>, math::NaN<F> };
 		}
 
@@ -34,12 +34,12 @@ namespace fms::curve {
 			_f = 0.01;
 		}
 
-		const auto vp = [i, &f, _t, p](F f_) { return value::present(i, extrapolate(f, _t, f_)) - p; };
+		const auto vp = [&i, &f, _t, p](F f_) { return value::present(i, extrapolate(f, _t, f_)) - p; };
 
 		auto [f_, tol, n] = root1d::secant(_f, _f + 0.01).solve(vp);
 		_f = f_;
 
-		return { uc.u, _f };
+		return { uc.first, _f };
 	}
 
 	// Bootstrap a piecewise flat curve from instruments and prices.
@@ -62,14 +62,18 @@ namespace fms::curve {
 		}
 		*/
 
+		for (size_t i = 0; i < is.size(); ++i) {
+			std::tie(_t, _f) = bootstrap0(is[i], f, _t, _f, ps[i]);
+			f.push_back(_t, _f);
+		}
+
 		return f;
 	}
 #ifdef _DEBUG
 	inline int bootstrap_test()
 	{
 		// TODO: Delete code that is not working.
-		/*
-		using namespace fms::iterable;
+		
 		{
 			curve::constant<> f;
 			double r = 0.1;
@@ -81,10 +85,10 @@ namespace fms::curve {
 			auto d = value::duration(zcb, extrapolate(f, 0., r));
 			assert(d == -1);
 			auto [_t, _f] = curve::bootstrap0(zcb, f, 0., 0.2, 1.);
-			assert(_t == 0);
+			assert(_t == 1);
 			assert(std::fabs(_f - r) <= math::sqrt_epsilon<double>);
 		}
-		*/
+		
 
 		return 0;
 	}
