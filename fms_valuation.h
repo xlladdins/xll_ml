@@ -40,7 +40,15 @@ namespace fms::value {
 	constexpr auto duration(const instrument::base<U, C>& i, const curve::base<T, F>& f)
 	{
 		// TODO: Use for loop like in the present value function.
-		return 0; // return sum(apply([&f](const auto& uc) { return -(uc.u) * present(uc, f); }, i));
+		C dur = 0;
+
+		const U* u = i.time();
+		const C* c = i.cash();
+		for (size_t j = 0; j < i.size(); ++j) {
+			dur += c[j] * f.discount(u[j]) * (-u[j]);
+		}
+
+		return dur; // return sum(apply([&f](const auto& uc) { return -(uc.u) * present(uc, f); }, i));
 	}
 
 	// Duration divided by present value.
@@ -55,7 +63,15 @@ namespace fms::value {
 	constexpr auto convexity(const instrument::base<U, C>& i, const curve::base<T, F>& f)
 	{
 		// TODO: Use for loop like in the present value function.
-		return 0; // return sum(apply([&f](const auto& uc) { return uc.u * uc.u * present(uc, f); }, i));
+		C conv = 0;
+
+		const U* u = i.time();
+		const C* c = i.cash();
+		for (size_t j = 0; j < i.size(); ++j) {
+			conv += c[j] * f.discount(u[j]) * u[j] * u[j];
+		}
+
+		return conv; // return sum(apply([&f](const auto& uc) { return uc.u * uc.u * present(uc, f); }, i));
 	}
 
 	// Price of the instrument at constant yield y.

@@ -11,6 +11,12 @@ namespace fms::instrument {
 	class base {
 	public:
 		// TODO: Add rule of 5
+		base() = default;
+		virtual ~base() = default;
+		base(const base&) = default;
+		base& operator=(const base&) = default;
+		base(base&&) = default;
+		base& operator=(base&&) = default;
 
 		// Number of cash flows.
 		constexpr std::size_t size() const noexcept
@@ -35,11 +41,11 @@ namespace fms::instrument {
 		{
 			return { _cash(), _size() };
 		}
-		std::pair<U,C> first() const noexcept
+		std::pair<U, C> first() const noexcept
 		{
 			return { _time()[0], _cash()[0] };
 		}
-		std::pair<U,C> last() const noexcept
+		std::pair<U, C> last() const noexcept
 		{
 			return { _time()[_size() - 1], _cash()[_size() - 1] };
 		}
@@ -117,7 +123,7 @@ namespace fms::instrument {
 		return t;
 	}
 	template<class U = double, class C = double>
-	inline std::vector<U> payments(U u, C c, frequency f = frequency::seminanual)
+	inline std::vector<U> payments(U u, C c, frequency f = frequency::semiannual)
 	{
 		std::size_t n = static_cast<std::size_t>(u * U(f));
 		std::vector<C> p(n, c / U(f)); // n coupon payments of c/f
