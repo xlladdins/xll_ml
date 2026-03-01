@@ -12,9 +12,22 @@
 
 namespace fms::curve {
 
-	// bootstrap1 - cash deposit
-	// bootstrap2 - forward rate agreement
-	
+	// bootstrap1 - cash deposit: simple interest rate r, maturity t.
+	// D(t) = 1/(1+r*t)  =>  f = log(1+r*t)/t
+	template<class T = double, class F = double>
+	inline std::pair<T, F> bootstrap1(T t, F r)
+	{
+		return { t, std::log(F(1) + r * t) / t };
+	}
+
+	// bootstrap2 - forward rate agreement: simple rate r from t1 to t2.
+	// D(t2)/D(t1) = 1/(1+r*(t2-t1))  =>  f = log(1+r*(t2-t1))/(t2-t1)
+	template<class T = double, class F = double>
+	inline std::pair<T, F> bootstrap2(T t1, T t2, F r)
+	{
+		return { t2, std::log(F(1) + r * (t2 - t1)) / (t2 - t1) };
+	}
+
 	// Bootstrap a single instrument given last time on curve and optional initial forward rate guess.
 	// Return point on the curve repricing the instrument.
 	template<class U, class C, class T = double, class F = double>
@@ -79,13 +92,11 @@ namespace fms::curve {
 #ifdef _DEBUG
 	inline int bootstrap_test()
 	{
-		// TODO:NE Delete code that is not working.
+		// bootstrap0: zero coupon bond with cash flow exp(r) at t=1, price 1
 		{
 			constexpr curve::constant<> f;
 			constexpr double r = 0.1;
 			const auto zcb = instrument::zero_coupon_bond(1, math::exp_approx(r));
-			const auto D = f.discount(1, 0., r);
-			assert(D < 1);
 			auto p = value::present(zcb, extrapolate(f, 0., r));
 			assert(math::abs(p - 1) < math::sqrt_epsilon<>);
 			auto d = value::duration(zcb, extrapolate(f, 0., r));
@@ -93,6 +104,24 @@ namespace fms::curve {
 			auto [_t, _f] = curve::bootstrap0(zcb, f, 0., 0.2, 1.);
 			assert(_t == 1);
 			assert(math::abs(_f - r) <= math::sqrt_epsilon<double>);
+		}
+		// bootstrap1: cash deposit, simple rate r=5%, maturity t=1
+		// D(1) = 1/(1+r*t) => f = log(1+r*t)/t
+		{
+			constexpr double r = 0.05, t = 1.0;
+			auto [t_, f_] = bootstrap1(t, r);
+			assert(t_ == t);
+			// (1 + r*t) * exp(-f_*t) == 1
+			assert(math::abs((1 + r * t) * std::exp(-f_ * t) - 1) < math::sqrt_epsilon<>);
+		}
+		// bootstrap2: FRA, simple rate r=6% over [1, 2]
+		// D(2)/D(1) = 1/(1+r*(t2-t1)) => f = log(1+r*(t2-t1))/(t2-t1)
+		{
+			constexpr double r = 0.06, t1 = 1.0, t2 = 2.0;
+			auto [t_, f_] = bootstrap2(t1, t2, r);
+			assert(t_ == t2);
+			// (1 + r*(t2-t1)) * exp(-f_*(t2-t1)) == 1
+			assert(math::abs((1 + r * (t2 - t1)) * std::exp(-f_ * (t2 - t1)) - 1) < math::sqrt_epsilon<>);
 		}
 
 		return 0;
