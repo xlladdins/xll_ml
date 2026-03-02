@@ -82,7 +82,8 @@ namespace fms::curve {
 	public:
 		constexpr constant(F f = 0)
 			: f(f)
-		{ }
+		{
+		}
 		constexpr constant(const constant& c) = default;
 		constexpr constant& operator=(const constant& c) = default;
 		constexpr ~constant() = default;
@@ -100,7 +101,6 @@ namespace fms::curve {
 	inline int constant_test()
 	{
 		{
-			// TODO:NE solution
 			constexpr curve::constant c(1.);
 			static_assert(math::isnan(constant(1.).forward(-1)));
 			static_assert(c.forward(0.) == 1);
@@ -143,7 +143,6 @@ namespace fms::curve {
 	inline int bump_test()
 	{
 		{
-			// TODO:NE solution
 			constexpr bump b(0.5, 1., 2.);
 			static_assert(b.forward(0.9) == 0);
 			static_assert(b.forward(1) == 0.5);
