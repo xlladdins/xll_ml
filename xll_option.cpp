@@ -13,7 +13,7 @@ static auto N = normal<>();
 // Return pointer to model or normal if m = 0.
 // If m is null, return pointer to default normal model.l_(HANDLEX m)
 base<>* model(HANDLEX m)
-{
+{	
 	if (!m) {
 		return &N;
 	}
@@ -23,20 +23,20 @@ base<>* model(HANDLEX m)
 }
 
 AddIn xai_option_cdf(
-	Function(XLL_DOUBLE, L"?xll_option_cdf", CATEGORY L".CDF")
+	Function(XLL_DOUBLE, L"xll_option_cdf", CATEGORY L".CDF")
 	.Arguments({
 		Arg(XLL_DOUBLE, L"x", L"is the option price."),
 		Arg(XLL_DOUBLE, L"s", L"is the volatility."),
 		Arg(XLL_HANDLEX, L"m", L"is the handle to a model."),
 		})
-		.Category(CATEGORY)
+	.Category(CATEGORY)
 	.FunctionHelp(L"Return cumulative share distribution function value of an option.")
 );
 double WINAPI xll_option_cdf(double x, double s, HANDLEX m)
 {
 #pragma XLLEXPORT
 	double result = NaN<double>;
-
+	
 	try {
 		result = model(m)->cdf(x, s);
 	}
@@ -49,7 +49,7 @@ double WINAPI xll_option_cdf(double x, double s, HANDLEX m)
 	return result;
 }
 AddIn xai_option_cgf(
-	Function(XLL_DOUBLE, L"?xll_option_cgf", CATEGORY L".CGF")
+	Function(XLL_DOUBLE, L"xll_option_cgf", CATEGORY L".CGF")
 	.Arguments({
 		Arg(XLL_DOUBLE, L"s", L"is the volatility."),
 		Arg(XLL_HANDLEX, L"m", L"is the handle to a model."),
@@ -71,18 +71,18 @@ double WINAPI xll_option_cgf(double s, HANDLEX m)
 }
 
 AddIn xai_black_moneyness(
-	Function(XLL_DOUBLE, L"?xll_black_moneyness", CATEGORY L".BLACK.MONEYNESS")
+	Function(XLL_DOUBLE, L"xll_black_moneyness", CATEGORY L".BLACK.MONEYNESS")
 	.Arguments({
 		Arg(XLL_DOUBLE, L"f", L"is the forward price."),
 		Arg(XLL_DOUBLE, L"s", L"is the volatility."),
 		Arg(XLL_DOUBLE, L"k", L"is the strike price."),
 		Arg(XLL_HANDLEX, L"m", L"is the handle to a model."),
 		})
-		.Category(CATEGORY)
+	.Category(CATEGORY)
 	.FunctionHelp(L"Return moneyness of an option.")
 );
 double WINAPI xll_black_moneyness(double f, double s, double k, HANDLEX m)
-{
+{	
 #pragma XLLEXPORT
 	double result = NaN<double>;
 
@@ -100,7 +100,7 @@ double WINAPI xll_black_moneyness(double f, double s, double k, HANDLEX m)
 }
 
 AddIn xai_option_black_put(
-	Function(XLL_DOUBLE, L"?xll_option_black_put", CATEGORY L".BLACK.PUT")
+	Function(XLL_DOUBLE, L"xll_option_black_put", CATEGORY L".BLACK.PUT")
 	.Arguments({
 		Arg(XLL_DOUBLE, L"f", L"is the forward price."),
 		Arg(XLL_DOUBLE, L"s", L"is the volatility."),
@@ -129,7 +129,7 @@ double WINAPI xll_option_black_put(double f, double s, double k, HANDLEX m)
 }
 
 AddIn xai_option_black_put_delta(
-	Function(XLL_DOUBLE, L"?xll_option_black_put_delta", CATEGORY L".BLACK.PUT_DELTA")
+	Function(XLL_DOUBLE, L"xll_option_black_put_delta", CATEGORY L".BLACK.PUT_DELTA")
 	.Arguments({
 		Arg(XLL_DOUBLE, L"f", L"is the forward price."),
 		Arg(XLL_DOUBLE, L"s", L"is the volatility."),
@@ -158,7 +158,7 @@ double WINAPI xll_option_black_put_delta(double f, double s, double k, HANDLEX m
 }
 
 AddIn xai_option_black_call(
-	Function(XLL_DOUBLE, L"?xll_option_black_call", CATEGORY L".BLACK.CALL")
+	Function(XLL_DOUBLE, L"xll_option_black_call", CATEGORY L".BLACK.CALL")
 	.Arguments({
 		Arg(XLL_DOUBLE, L"f", L"is the forward price."),
 		Arg(XLL_DOUBLE, L"s", L"is the volatility."),
@@ -187,7 +187,7 @@ double WINAPI xll_option_black_call(double f, double s, double k, HANDLEX m)
 }
 
 AddIn xai_option_bsm_put(
-	Function(XLL_DOUBLE, L"?xll_option_bsm_put", CATEGORY L".BSM.PUT")
+	Function(XLL_DOUBLE, L"xll_option_bsm_put", CATEGORY L".BSM.PUT")
 	.Arguments({
 		Arg(XLL_DOUBLE, L"S", L"is the spot price."),
 		Arg(XLL_DOUBLE, L"sigma", L"is the volatility."),
