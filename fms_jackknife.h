@@ -4,6 +4,7 @@
 
 namespace fms {
 
+	// x_[i] = (sum(x) - x[i]) / (n - 1)
 	template<class X = double>
 	inline X* jackknife(size_t n, X* x)
 	{
