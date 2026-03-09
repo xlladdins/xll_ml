@@ -3,11 +3,27 @@
 #include <valarray>
 #include "fms_option.h"
 
-namespace fms::option::discrete {
+namespace fms::option {
 	template<class F = double, class S = double>
-	class model : option::base<F, S> {
+	class discrete : public option::base<F, S> {
 		std::valarray<F> xi, pi; // P(X = x_i) = p_i
-	
+
+	public:
+		std::size_t size() const
+		{
+			return xi.size();
+		}
+
+		const std::valarray<F>& x() const
+		{
+			return xi;
+		}
+
+		const std::valarray<F>& p() const
+		{
+			return pi;
+		}
+
 		void normalize()
 		{
 			pi /= pi.sum(); // pi.sum() == 1
@@ -15,8 +31,8 @@ namespace fms::option::discrete {
 			xi -= Ex; // mean 0
 			xi /= std::sqrt((xi * xi * pi).sum()); // variance 1
 		}
-	public:
-		model(std::size_t n, const F* x, const F* p)
+
+		discrete(std::size_t n, const F* x, const F* p)
 			: xi(x, n), pi(p, n)
 		{
 			normalize();
@@ -26,16 +42,25 @@ namespace fms::option::discrete {
 		//   = sum_{x_i <= x} exp(s x_i - kappa(s)) pi_i
 		F _cdf(F x, S s) const override
 		{
-			return 0; // TODO: implement
+			S ks = _cgf(s);
+			F cdf = 0;
+
+			for (std::size_t i = 0; i < xi.size(); ++i) {
+				if (xi[i] <= x) {
+					cdf += std::exp(s * xi[i] - ks) * pi[i];
+				}
+			}
+
+			return cdf;
 		}
 	
 		// kappa(s) = log E[exp(s X)] = log sum p_i exp(s x_i)
 		S _cgf(S s) const override
 		{
-			return 0; // TODO: implement
+			return std::log((pi * std::exp(s * xi)).sum());
 		}
 	};
-} // namespace fms::option::discrete
+} // namespace fms::option
 
 // TODO: Create xll_option_discrete.cpp based on xll_option_normal.cpp
 // TODO: Implement add-in for \OPTION.DISCRETE

@@ -228,6 +228,7 @@
     <ClInclude Include="fms_root1d.h" />
     <ClInclude Include="fms_valuation.h" />
     <ClInclude Include="fms_bootstrap.h" />
+    <ClInclude Include="resource.h" />
     <ClInclude Include="xll_fi.h" />
     <ClInclude Include="xll_ml.h" />
   </ItemGroup>
@@ -244,6 +245,7 @@
     </ClCompile>
     <ClCompile Include="xll_math.cpp" />
     <ClCompile Include="xll_ml.cpp" />
+    <ClCompile Include="xll_option_discrete.cpp" />
     <ClCompile Include="xll_option_normal.cpp" />
     <ClCompile Include="xll_valuation.cpp" />
   </ItemGroup>
@@ -251,6 +253,9 @@
     <ProjectReference Include="xll24\xll.vcxproj">
       <Project>{7d7375af-e7e3-42d3-a00f-d8ee22c39924}</Project>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="xll_ml.rc" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
