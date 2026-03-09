@@ -6,7 +6,7 @@
 using namespace fms;
 using namespace xll;
 
-Auto<OpenAfter> xoa_bootstrap_test([](){ curve::bootstrap_test(); return 1; });
+//Auto<OpenAfter> xoa_bootstrap_test([](){ curve::bootstrap_test(); return 1; });
 
 AddIn xai_curve_pwflat_bootstrap_(
 	Function(XLL_HANDLEX, L"xll_curve_pwflat_bootstrap_", L"\\" CATEGORY L".CURVE.PWFLAT.BOOTSTRAP.")
