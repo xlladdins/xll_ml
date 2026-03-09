@@ -14,7 +14,7 @@ namespace fms::curve {
 
 	// bootstrap1 - cash deposit
 	// bootstrap2 - forward rate agreement
-	
+
 	// Bootstrap a single instrument given last time on curve and optional initial forward rate guess.
 	// Return point on the curve repricing the instrument.
 	template<class U, class C, class T = double, class F = double>
@@ -34,9 +34,9 @@ namespace fms::curve {
 			_f = 0.01;
 		}
 
-		const auto vp = [&i, &f, _t, p](F f_) { 
-			return value::present(i, extrapolate(f, _t, f_)) - p; 
-		};
+		const auto vp = [&i, &f, _t, p](F f_) {
+			return value::present(i, extrapolate(f, _t, f_)) - p;
+			};
 
 		auto [f_, tol, n] = root1d::secant(_f, _f + 0.01).solve(vp);
 
@@ -45,7 +45,7 @@ namespace fms::curve {
 
 	// Bootstrap a piecewise flat curve from instruments and prices.
 	template<class U = double, class C = double, class P = double>
-	inline curve::pwflat<U, P> bootstrap(std::span<instrument::instrument<U,C>*> is, std::span<P> ps,
+	inline curve::pwflat<U, P> bootstrap(std::span<instrument::instrument<U, C>*> is, std::span<P> ps,
 		double _t = 0, double _f = 0.03)
 		//requires std::convertible_to<I,const instrument::base<U,C>&>
 	{

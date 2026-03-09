@@ -82,7 +82,8 @@ namespace fms::curve {
 	public:
 		constexpr constant(F f = 0)
 			: f(f)
-		{ }
+		{
+		}
 		constexpr constant(const constant& c) = default;
 		constexpr constant& operator=(const constant& c) = default;
 		constexpr ~constant() = default;
