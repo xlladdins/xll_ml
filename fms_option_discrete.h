@@ -5,7 +5,7 @@
 
 namespace fms::option::discrete {
 	template<class F = double, class S = double>
-	class model : option::base<F, S> {
+	class model : public option::base<F, S> {
 		std::valarray<F> xi, pi; // P(X = x_i) = p_i
 	
 		void normalize()
