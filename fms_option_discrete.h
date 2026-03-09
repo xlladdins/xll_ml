@@ -1,5 +1,6 @@
-// fms_option_discrete.h - Discrete distribution for option pricing	
+// fms_option_discrete.h - Discrete distribution for option pricing
 #pragma once
+#include <cmath>
 #include <valarray>
 #include "fms_option.h"
 
@@ -21,33 +22,30 @@ namespace fms::option::discrete {
 		{
 			normalize();
 		}
-	
-		// E[exp(s X - kappa(s)) 1(X <= x) ] 
+
+		// Return normalized xi values
+		const std::valarray<F>& get_xi() const { return xi; }
+		std::size_t size() const { return xi.size(); }
+
+		// E[exp(s X - kappa(s)) 1(X <= x)]
 		//   = sum_{x_i <= x} exp(s x_i - kappa(s)) pi_i
 		F _cdf(F x, S s) const override
 		{
-			S kappa = _cgf(s);
-			F sum = 0;
+			S kappa_s = _cgf(s);
+			F result = 0;
 			for (std::size_t i = 0; i < xi.size(); ++i) {
 				if (xi[i] <= x) {
-					sum += static_cast<F>(std::exp(s * xi[i] - kappa) * pi[i]);
+					result += std::exp(s * xi[i] - kappa_s) * pi[i];
 				}
 			}
-			return sum;
+			return result;
 		}
-	
+
 		// kappa(s) = log E[exp(s X)] = log sum p_i exp(s x_i)
 		S _cgf(S s) const override
 		{
-			S sum = 0;
-			for (std::size_t i = 0; i < xi.size(); ++i) {
-				sum += pi[i] * std::exp(s * xi[i]);
-			}
-			return std::log(sum);
+			return std::log((std::exp(s * xi) * pi).sum());
 		}
-
-		// Return normalized xi values for use in Excel
-		const std::valarray<F>& xi_values() const { return xi; }
 	};
 } // namespace fms::option::discrete
 

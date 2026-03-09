@@ -1,5 +1,4 @@
-// xll_option_discrete.cpp - Discrete option pricing model
-#include <algorithm>
+// xll_option_discrete.cpp - Discrete distribution option pricing model add-in
 #include "fms_option_discrete.h"
 #include "xll_ml.h"
 
@@ -9,27 +8,27 @@
 using namespace xll;
 using namespace fms::option;
 
+// \OPTION.DISCRETE - construct a discrete model from arrays of x and p values
 AddIn xai_option_discrete(
 	Function(XLL_HANDLEX, L"xll_option_discrete", L"\\" CATEGORY L".DISCRETE")
 	.Arguments({
-		Arg(XLL_FP, L"xi", L"is the array of support points."),
-		Arg(XLL_FP, L"pi", L"is the array of probabilities."),
+		Arg(XLL_FP, L"x", L"is the array of atom values x_i."),
+		Arg(XLL_FP, L"p", L"is the array of probabilities p_i."),
 		})
 	.Uncalced()
 	.Category(CATEGORY)
-	.FunctionHelp(L"Return handle to discrete option pricing model with normalized support.")
+	.FunctionHelp(L"Return a handle to a discrete option pricing model with P(X = x_i) = p_i.")
 );
-HANDLEX WINAPI xll_option_discrete(_FP12* pxi, _FP12* ppi)
+HANDLEX WINAPI xll_option_discrete(_FP12* px, _FP12* pp)
 {
 #pragma XLLEXPORT
 	HANDLEX result = INVALID_HANDLEX;
 
 	try {
-		int n = size(*pxi);
-		ensure(n > 0 || !"xi array cannot be empty");
-		ensure(size(*ppi) == static_cast<unsigned>(n) || !"xi and pi must have same size");
-
-		handle<base<>> m_(new discrete::model<>(n, pxi->array, ppi->array));
+		auto xs = span(*px);
+		auto ps = span(*pp);
+		ensure(xs.size() == ps.size());
+		handle<base<>> m_(new discrete::model<>(xs.size(), xs.data(), ps.data()));
 		ensure(m_);
 		result = m_.get();
 	}
@@ -43,40 +42,39 @@ HANDLEX WINAPI xll_option_discrete(_FP12* pxi, _FP12* ppi)
 	return result;
 }
 
+// OPTION.DISCRETE.XI - return normalized xi values from a discrete model handle
 AddIn xai_option_discrete_xi(
-	Function(XLL_FP, L"xll_option_discrete_xi", CATEGORY L".DISCRETE")
+	Function(XLL_FP, L"xll_option_discrete_xi", CATEGORY L".DISCRETE.XI")
 	.Arguments({
-		Arg(XLL_HANDLEX, L"h", L"is a handle returned by \\" CATEGORY L".DISCRETE."),
+		Arg(XLL_HANDLEX, L"m", L"is a handle to a discrete model."),
 		})
 	.Category(CATEGORY)
-	.FunctionHelp(L"Return normalized xi values from discrete option model.")
+	.FunctionHelp(L"Return the normalized atom values x_i of a discrete model.")
 );
-_FP12* WINAPI xll_option_discrete_xi(HANDLEX h)
+_FP12* WINAPI xll_option_discrete_xi(HANDLEX m)
 {
 #pragma XLLEXPORT
-	static FPX xi_out;
+	static FPX result;
 
 	try {
-		xi_out.resize(0, 0);
-		handle<base<>> h_(h);
-		ensure(h_);
-
-		auto* dm = h_.as<discrete::model<>>();
-		ensure(dm || !"handle must be from \\OPTION.DISCRETE");
-
-		const auto& xi = dm->xi_values();
-		int n = static_cast<int>(xi.size());
-		xi_out.resize(n, 1);
-		std::copy_n(&xi[0], n, xi_out.array());
+		result.resize(0, 0);
+		handle<base<>> m_(m);
+		ensure(m_);
+		auto* dm = m_.as<discrete::model<>>();
+		ensure(dm);
+		int n = (int)dm->size();
+		result.resize(1, n);
+		const auto& xi = dm->get_xi();
+		for (int i = 0; i < n; ++i) {
+			result[i] = xi[i];
+		}
 	}
 	catch (const std::exception& ex) {
 		XLL_ERROR(ex.what());
-		return nullptr;
 	}
 	catch (...) {
 		XLL_ERROR(__FUNCTION__ ": unknown exception");
-		return nullptr;
 	}
 
-	return xi_out.get();
+	return result.get();
 }
