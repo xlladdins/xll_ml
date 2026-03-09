@@ -5,9 +5,9 @@
 
 namespace fms::option::discrete {
 	template<class F = double, class S = double>
-	class model : option::base<F, S> {
+	class model : public option::base<F, S> {
 		std::valarray<F> xi, pi; // P(X = x_i) = p_i
-	
+
 		void normalize()
 		{
 			pi /= pi.sum(); // pi.sum() == 1
@@ -21,18 +21,32 @@ namespace fms::option::discrete {
 		{
 			normalize();
 		}
-	
-		// E[exp(s X - kappa(s)) 1(X <= x) ] 
+
+		std::size_t size() const { return xi.size(); }
+		const F* data() const { return &xi[0]; }
+
+		// E[exp(s X - kappa(s)) 1(X <= x) ]
 		//   = sum_{x_i <= x} exp(s x_i - kappa(s)) pi_i
 		F _cdf(F x, S s) const override
 		{
-			return 0; // TODO: implement
+			S kappa = _cgf(s);
+			F result = 0;
+			for (std::size_t i = 0; i < xi.size(); ++i) {
+				if (xi[i] <= x) {
+					result += std::exp(s * xi[i] - kappa) * pi[i];
+				}
+			}
+			return result;
 		}
-	
+
 		// kappa(s) = log E[exp(s X)] = log sum p_i exp(s x_i)
 		S _cgf(S s) const override
 		{
-			return 0; // TODO: implement
+			S total = 0;
+			for (std::size_t i = 0; i < xi.size(); ++i) {
+				total += pi[i] * std::exp(s * xi[i]);
+			}
+			return std::log(total);
 		}
 	};
 } // namespace fms::option::discrete
@@ -41,4 +55,4 @@ namespace fms::option::discrete {
 // TODO: Implement add-in for \OPTION.DISCRETE
 // TODO: Implement add-in for OPTION.DISCRETE to return normalized xi values
 // TODO: Load add-in and follow comments in final.xlsx.
-// TODO: Put link to your GitHub repository on Brightspace submission.
+// TODO: Put link to your GitHub repository on Brightspace submission.#pragma once
