@@ -54,9 +54,11 @@ _FP12* WINAPI xll_option_discrete(HANDLEX m)
 	static FPX xi;
 
 	try {
-		handle<discrete::model<>> m_(m);
+		handle<base<>> m_(m);
 		ensure(m_);
-		const auto& v = m_->get_xi();
+		auto* dm = dynamic_cast<discrete::model<>*>(m_.ptr());
+		ensure(dm);
+		const auto& v = dm->get_xi();
 		FPX xi_((int)v.size(), 1);
 		for (int i = 0; i < (int)v.size(); ++i) {
 			xi_.array()[i] = v[i];
