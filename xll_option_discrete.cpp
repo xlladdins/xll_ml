@@ -25,10 +25,8 @@ HANDLEX WINAPI xll_option_discrete(_FP12* px, _FP12* pp)
 	HANDLEX result = INVALID_HANDLEX;
 
 	try {
-		auto xs = span(*px);
-		auto ps = span(*pp);
-		ensure(xs.size() == ps.size());
-		handle<base<>> m_(new discrete::model<>(xs.size(), xs.data(), ps.data()));
+		ensure(size(*px) == size(*pp));
+		handle<base<>> m_(new discrete::model<>(size(*px), px->array, pp->array));
 		ensure(m_);
 		result = m_.get();
 	}
@@ -60,7 +58,7 @@ _FP12* WINAPI xll_option_discrete_xi(HANDLEX m)
 		result.resize(0, 0);
 		handle<base<>> m_(m);
 		ensure(m_);
-		auto* dm = m_.as<discrete::model<>>();
+		auto* dm = dynamic_cast<discrete::model<>*>(m_.ptr());
 		ensure(dm);
 		int n = (int)dm->size();
 		result.resize(1, n);
