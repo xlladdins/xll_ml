@@ -22,18 +22,27 @@ namespace fms::option::discrete {
 			normalize();
 		}
 	
-		// E[exp(s X - kappa(s)) 1(X <= x) ] 
+		// E[exp(s X - kappa(s)) 1(X <= x) ]
 		//   = sum_{x_i <= x} exp(s x_i - kappa(s)) pi_i
 		F _cdf(F x, S s) const override
 		{
-			return 0; // TODO: implement
+			F kappa = _cgf(s);
+			F result = 0;
+			for (std::size_t i = 0; i < xi.size(); ++i) {
+				if (xi[i] <= x) {
+					result += std::exp(s * xi[i] - kappa) * pi[i];
+				}
+			}
+			return result;
 		}
-	
+
 		// kappa(s) = log E[exp(s X)] = log sum p_i exp(s x_i)
 		S _cgf(S s) const override
 		{
-			return 0; // TODO: implement
+			return std::log((std::exp(s * xi) * pi).sum());
 		}
+
+		const std::valarray<F>& get_xi() const { return xi; }
 	};
 } // namespace fms::option::discrete
 
