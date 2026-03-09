@@ -1,6 +1,7 @@
 // xll_option.cpp - Generalized option model
 #include "fms_option.h"
 #include "fms_option_normal.h"
+#include "fms_option_discrete.h"
 #include "xll_ml.h"
 
 #undef CATEGORY
