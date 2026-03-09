@@ -32,7 +32,7 @@ namespace fms::root1d {
 	static_assert(math::isnan(bracket<double>(1, 5, 2, 4)));
 #endif // _DEBUG
 
-	template<class X, class Y = X>
+	template<class X = double, class Y = X>
 	struct secant {
 		X x0, x1;
 		X tolerance;

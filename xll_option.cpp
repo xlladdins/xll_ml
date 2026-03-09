@@ -158,6 +158,35 @@ double WINAPI xll_option_black_put_delta(double f, double s, double k, HANDLEX m
 	return result;
 }
 
+AddIn xai_option_black_put_implied(
+	Function(XLL_DOUBLE, L"xll_option_black_put_implied", CATEGORY L".BLACK.PUT_IMPLIED")
+	.Arguments({
+		Arg(XLL_DOUBLE, L"f", L"is the forward price."),
+		Arg(XLL_DOUBLE, L"p", L"is the put price."),
+		Arg(XLL_DOUBLE, L"k", L"is the strike price."),
+		Arg(XLL_HANDLEX, L"m", L"is the handle to a model."),
+		})
+		.Category(CATEGORY)
+	.FunctionHelp(L"Return vol of a European put option repricing the put.")
+);
+double WINAPI xll_option_black_put_implied(double f, double s, double k, HANDLEX m)
+{
+#pragma	XLLEXPORT
+	double result = NaN<double>;
+
+	try {
+		result = black::put_implied(f, s, k, *model(m));
+	}
+	catch (const std::exception& ex) {
+		XLL_ERROR(ex.what());
+	}
+	catch (...) {
+		XLL_ERROR(__FUNCTION__ ": unknown exception");
+	}
+
+	return result;
+}
+
 AddIn xai_option_black_call(
 	Function(XLL_DOUBLE, L"xll_option_black_call", CATEGORY L".BLACK.CALL")
 	.Arguments({

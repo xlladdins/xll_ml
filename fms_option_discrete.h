@@ -5,8 +5,9 @@
 
 namespace fms::option::discrete {
 	template<class F = double, class S = double>
-	class model : option::base<F, S> {
-		std::valarray<F> xi, pi; // P(X = x_i) = p_i
+	class model : public option::base<F, S> {
+	public:
+		std::valarray<F> xi, pi; // P(X = xi[i]) = pi[i]
 	
 		void normalize()
 		{
@@ -26,13 +27,21 @@ namespace fms::option::discrete {
 		//   = sum_{x_i <= x} exp(s x_i - kappa(s)) pi_i
 		F _cdf(F x, S s) const override
 		{
-			return 0; // TODO: implement
+			F cdf = 0;
+			for (size_t i = 0; i < xi.size() && xi[i] <= x; ++i) {
+				cdf += std::exp(s * xi[i] - _cgf(s)) * pi[i];
+			}
+			return cdf; // TODO: implement
 		}
 	
 		// kappa(s) = log E[exp(s X)] = log sum p_i exp(s x_i)
 		S _cgf(S s) const override
 		{
-			return 0; // TODO: implement
+			S mgf = 0; // moment generating function
+			for (size_t i = 0; i < xi.size(); ++i) {
+				mgf += std::exp(s * xi[i]) * pi[i];
+			}
+			return std::log(mgf); // TODO: implement
 		}
 	};
 } // namespace fms::option::discrete

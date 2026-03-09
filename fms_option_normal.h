@@ -9,8 +9,6 @@ namespace fms::option {
 
 	template<class X = double, class S = double>
 	struct normal : base<X, S> {
-		using base<X, S>::T;
-
 	private:
 		// Standard normal cumulative distribution function
 		static X cdf(X x)
@@ -20,7 +18,7 @@ namespace fms::option {
 		}
 	public:
 		// cumulative distribution function
-		T _cdf(X x, S s) const override
+		X _cdf(X x, S s) const override
 		{
 			return cdf(x - s);
 		}
@@ -30,5 +28,17 @@ namespace fms::option {
 			return s * s /2;
 		}
 	};
+
+	namespace black {
+		// Vol s given put price p
+		template<class F = double, class S = double, class K = double>
+		inline F put_implied(F f, F p, K k, const base<F, S>& m)
+		{
+			auto g = [f, p, k](S s) { return put(f, s, k, normal<F>()) - p; };
+			auto res = root1d::secant<>(.1, .11).solve(g);
+
+			return get<0>(res);
+		}
+	}
 
 } // namespace fms::option::black

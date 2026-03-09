@@ -11,6 +11,7 @@
 #include <cmath>
 #include <limits>
 #include <tuple>
+#include "fms_root1d.h"
 
 namespace fms::option {
 
