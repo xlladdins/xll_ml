@@ -1,6 +1,7 @@
 // fms_jackknife.h - Jackknife resampling for statistical estimation
 #pragma once
 #include <numeric>
+#include <cassert>
 
 namespace fms {
 
