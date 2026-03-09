@@ -215,6 +215,7 @@
     <ClInclude Include="fms_curve.h" />
     <ClInclude Include="fms_dual\fms_dual.h" />
     <ClInclude Include="fms_instrument.h" />
+    <ClInclude Include="fms_jackknife.h" />
     <ClInclude Include="fms_math.h" />
     <ClInclude Include="fms_option.h" />
     <ClInclude Include="fms_option_normal.h" />
@@ -237,6 +238,7 @@
     <ClCompile Include="xll_instrument.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
     </ClCompile>
+    <ClCompile Include="xll_jackknife.cpp" />
     <ClCompile Include="xll_option.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
     </ClCompile>
